@@ -10,6 +10,11 @@ inputs:
     description: 'Path to the directory where the action will output the pbo file'
     required: true
 
+  briefingName:
+    description: 'If not empty, will overwrite the mission briefingName before building the pbo'
+    required: false
+    default: ''
+
 runs:
   using: composite
   steps:
@@ -18,6 +23,7 @@ runs:
       run: |
         $ActionArgs = @{
           Source = Join-Path -Path ${env:GITHUB_WORKSPACE} -ChildPath '${{ inputs.source }}'
-          Target = Join-Path -Path ${env:GITHUB_WORKSPACE} -ChildPath '${{ inputs.target }}' 
+          Target = Join-Path -Path ${env:GITHUB_WORKSPACE} -ChildPath '${{ inputs.target }}'
+          BriefingName = ${{ inputs.briefingName }}
         }
         ${{ github.action_path }}/New-MissionPbo.ps1 @ActionArgs
