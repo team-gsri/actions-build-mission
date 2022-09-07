@@ -8,8 +8,13 @@ param (
     [Parameter(Mandatory)]
     [ValidateScript({ if (Test-Path $_ -PathType Container) { $true } else { Throw '-Target must ba a valid directory' } })]
     [string]
-    $Target
+    $Target,
+
+    [Parameter()]
+    [string]
+    $BriefingName = ''
 )
+
 Begin {
     if (-Not (Test-Path -Path ${env:ARMA3TOOLS} -PathType Container)) {
         Throw 'Arma 3 Tools not found'
@@ -27,8 +32,16 @@ Begin {
         Throw 'mission.sqm file not found'
     }
     $Source = Resolve-Path $Source.TrimEnd('/\')
+    $BriefingName = $BriefingName -Replace ( '"', '' )
 }
+
 Process {
+    if($BriefingName -ne '') {
+        $(Get-Content $missionFilename) -Replace (
+            'briefingName="[^"]*";',
+            "briefingName=""$BriefingName"";"
+        ) | Set-Content -LiteralPath $missionFilename
+    }
     & $cfgConvertExe -bin -dst "$missionFilename" "$missionFilename"
     & $fileBankExe -dst $Target $Source
 }

@@ -32,17 +32,22 @@ You can also use [Steamcmd](https://developer.valvesoftware.com/wiki/SteamCMD) t
 
 **Required.** Path to a directory where the action will put the pbo file, relative to the repository root.
 
+### `briefingName`
+
+**Optional.** If not empty, this value will overwrite the mission's briefingName value before building the pbo. Double quotes (") are ignored to prevent injection. Usefull to inject versioning information such as version number of commit ref.
+
 ## Outputs
 
 *There is no output*
 
 ## Example
 
-This example will pack content of `missions/Orion.Malden` into `output/Orion.Malden.pbo` :
+This example will rename the mission to `Orion main` and pack content of `missions/Orion.Malden` into `output/Orion.Malden.pbo` :
 
 ```yml
-uses: team-gsri/actions-build-mission@1.0.0
+uses: team-gsri/actions-build-mission@0.1.0
 with:
+  briefingName: Orion ${{ gitbub.ref_name }}
   source: 'missions/Orion.Malden'
   target: 'output'
 ```
